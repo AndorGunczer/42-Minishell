@@ -1,26 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_memfree.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/08/06 10:57:32 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/10/13 19:43:15 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+void	ft_memfree(void *ptr)
 {
-	t_env	*tmp;
-
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
-	{
-		tmp = tmp->next;
-	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	if (ptr == NULL)
+		return ;
+	free(ptr);
+	ptr = NULL;
 }

@@ -1,4 +1,16 @@
-# include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dollar_sign.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/24 16:43:33 by home              #+#    #+#             */
+/*   Updated: 2021/12/24 16:43:36 by home             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/minishell.h"
 
 typedef struct s_store_env {
 	char	*string;
@@ -13,13 +25,18 @@ typedef struct s_dollar {
 	int		len_dst;
 	int		len_new;
 	int		len_src;
+	int		x;
+	t_store_env	*var;
+	t_store_env *tmp;
 }	t_dollar;
 
-static t_store_env *var_new(char *str, t_test *env)
+/*	creates a new t_store_env list */
+
+static t_store_env *var_new(char *str, t_list *lst)
 {
 	t_store_env	*new_struct;
-	char	*tmp;
-	int		i;
+	char		*tmp;
+	int			i;
 
 	i = 0;
 	while (ft_isalnum(*(str + i)) == 1)
@@ -28,11 +45,15 @@ static t_store_env *var_new(char *str, t_test *env)
 	new_struct = malloc(sizeof(t_store_env));
 	if (new_struct == 0)
 		return (0);
-	new_struct->string = ft_getenv(tmp, env->env);
+	new_struct->string = ft_getenv(tmp, lst->env);
 	new_struct->var_len = ft_strlen(new_struct->string);
 	new_struct->next = NULL;
 	return (new_struct);
 }
+
+/*	Copies character of dst at the given index to
+*	character of str at the given index
+*/
 
 static void	copy(char *str, char *dst)
 {
@@ -47,6 +68,10 @@ static void	copy(char *str, char *dst)
 		str[i++] = dst[j++];
 	}
 }
+
+/*	Recreates the *str by replacing env names with their values
+*	based on the contents of the *var list.
+*/
 
 static void	create_str(char *str, t_dollar *re, t_store_env *var)
 {
@@ -66,44 +91,60 @@ static void	create_str(char *str, t_dollar *re, t_store_env *var)
 	}
 }
 
-char	*path_replace(char *str, t_test *env)
-{
-	t_dollar re;
-	t_store_env *var;
-	t_store_env *tmp;
-	int x = 0;
+/*	Different pairs in env have different amount of characters
+*	thus we create a list to store the env value and the length
+*	of the env value.
+*/
 
-	re.len_new = 0;
-	re.i = 0;
-	re.j = 0;
-	while (str[re.i] != '\0')
+static void	create_lst(char *str, t_dollar *re, t_list *lst)
+{
+	while (str[re->i] != '\0')
 	{
-		if (*(str + re.i) == '$' && *(str + re.i + 1) != '\0' && ft_isalnum(*(str + re.i + 1)) == 1)
+		if (*(str + re->i) == '$' &&
+			*(str + re->i + 1) != '\0' && ft_isalnum(*(str + re->i + 1)) == 1)
 		{
-			if (0 == x++)
+			if (0 == re->x++)
 			{
-				tmp = var_new(str + re.i + 1, env);
-				var = tmp;
-				re.len_new += tmp->var_len;
+				re->tmp = var_new(str + re->i++ + 1, lst);
+				re->var = re->tmp;
 			}
 			else
 			{
-				tmp->next = var_new(str + re.i + 1, env);
-				re.len_new += tmp->var_len;
-				tmp = tmp->next;
+				re->tmp->next = var_new(str + re->i++ + 1, lst);
+				re->tmp = re->tmp->next;
 			}
-			re.i++;
-			while (ft_isalnum(*(str + re.i)) != 0 && *(str + re.i) != '\0')
-				re.i++;
+			re->len_new += re->tmp->var_len;
+			while (ft_isalnum(*(str + re->i)) != 0 &&
+				*(str + re->i) != '\0' && *(str + re->i) != '$')
+				re->i++;
 		}
-		else if (*(str + re.i) != '\0')
+		else if (*(str + re->i) != '\0')
 		{
-			re.len_new++;
-			re.i++;
+			re->len_new++;
+			re->i++;
 		}
 	}
-	re.ret = ft_calloc(re.len_new + 1, sizeof(char));
+}
+
+/*	Detects environment variable name in *str
+*	and replaces that name with the environment value.
+*/
+
+char	*path_replace(char *str, t_list *lst)
+{
+	t_dollar re;
+
+	re.x = 0;
+	re.len_new = 0;
 	re.i = 0;
-	create_str(str, &re, var);
+	re.j = 0;
+	create_lst(str, &re, lst);
+	re.ret = ft_calloc(re.len_new + 1, sizeof(char));
+	re.ret[re.len_new] = '\0';
+	re.i = 0;
+	create_str(str, &re, re.var);
+	if (str)
+		free(str);
+	// ft_lstclear()
 	return (re.ret);
 }

@@ -1,26 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_tolower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/15 10:34:25 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/06/22 14:03:14 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+int	ft_tolower(int c)
 {
-	t_env	*tmp;
-
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
-	{
-		tmp = tmp->next;
-	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	if (c >= 65 && c <= 90)
+		return (c + 32);
+	else
+		return (c);
 }

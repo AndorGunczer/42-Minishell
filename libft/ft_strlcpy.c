@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/16 15:13:20 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/10/13 15:26:08 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	t_env	*tmp;
+	size_t	i;
+	size_t	src_len;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
+	i = 0;
+	if (src == NULL)
+		return (0);
+	src_len = ft_strlen(src);
+	if (size == 0)
+		return (src_len);
+	while (src[i] != '\0' && i < size - 1)
 	{
-		tmp = tmp->next;
+		dst[i] = src[i];
+		i++;
 	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	dst[i] = 0;
+	return (src_len);
 }

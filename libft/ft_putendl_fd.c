@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/16 16:39:02 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/12/24 17:07:32 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+int	ft_putendl_fd(char *s, int fd)
 {
-	t_env	*tmp;
+	size_t	i;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
+	i = 0;
+	if (s != NULL)
 	{
-		tmp = tmp->next;
+		while (s[i] != '\0')
+		{
+			write(fd, s + i, 1);
+			i++;
+		}
+		write(fd, "\n", 1);
 	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	return (1);
 }

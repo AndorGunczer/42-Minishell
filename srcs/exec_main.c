@@ -1,4 +1,16 @@
-# include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_main.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/24 16:44:28 by home              #+#    #+#             */
+/*   Updated: 2021/12/24 16:44:34 by home             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/minishell.h"
 
 /*	exec_main.c is the core of the "exec" filegroup */
 
@@ -25,7 +37,7 @@ static void	close_pipes(t_fd *fd)
 
 /* Child Process */
 
-static void	child(t_test *lst, t_fd *fd, char **envp)
+static void	child(t_list *lst, t_fd *fd, char **envp)
 {
 	close(fd->pipes[0]);
 	if (*(lst->err) > 0 && *(lst->err) != 101)
@@ -54,22 +66,20 @@ static void	parent(t_fd *fd, int pid)
 
 /*	Main execution block of the exec filegroup */
 
-void	pipex(t_test *lst, char **envp)
+void	pipex(t_list *lst, char **envp)
 {
 	t_fd	fd;
 	int		pid;
 	int		i;
-	t_test *tmp;
-	int err;
+	t_list *tmp;
 
 	i = 0;
 	tmp = lst;
-	err = 0;
 	while (tmp != NULL)
 	{
-		tmp->err = &err;
 		route_valid(tmp, i++);
-		env_to_value(tmp->cmd, tmp);
+		if (tmp->cmd)
+			env_to_value(tmp->cmd, tmp);
 		if (pipe(fd.pipes) < 0)
 			exit (1);
 		if ((pid = fork()) < 0)

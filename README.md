@@ -114,3 +114,14 @@ __Other__
 interactive mod : Accept input typed from the keyboard
 
 non interactive mod : Shells execute commands read from a file
+
+create struct with bigger variable to smaller to avoid padding
+
+built-in fct:
+echo with option -n
+cd with only a relative or absolute path
+pwd with no options
+export with no options
+unset with no options
+env with no options or arguments
+exit with no options

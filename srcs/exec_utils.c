@@ -1,27 +1,40 @@
-# include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/24 16:45:00 by home              #+#    #+#             */
+/*   Updated: 2021/12/24 16:45:03 by home             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/minishell.h"
 
 /*	Replaces ENV name with it's value */
 
-void	env_to_value_lst(t_words *words, t_test *lst)
+void	env_to_value_lst(t_words *words, t_list *lst)
 {
 	while (words)
 	{
-		replace(words->word, ft_itoa(exit_status) ,"$?");
+		words->word = replace(words->word, ft_itoa(exit_status) ,"$?");
 		words->word = path_replace(words->word, lst);
 		words = words->next;
 	}
 }
 
-void	env_to_value(char **words, t_test *lst)
+void	env_to_value(char **words, t_list *lst)
 {
 	int	i;
 
 	i = 0;
+	int j = 0;
 	while (words[i])
 	{
 		words[i] = replace(words[i], ft_itoa(exit_status) ,"$?");
 		words[i] = path_replace(words[i], lst);
-		ft_putendl_fd(words[i], 2);
+		j = 0;
 		i++;
 	}
 }
@@ -30,7 +43,7 @@ void	env_to_value(char **words, t_test *lst)
 *	stored in a list into the output FD
 */
 
-void	heredoc_output(t_words *words, t_test *lst, t_fd *fd, char *delimiter)
+void	heredoc_output(t_words *words, t_list *lst, t_fd *fd, char *delimiter)
 {
 	if (lst->suffix == FILE_OUT)
 	{
@@ -55,28 +68,36 @@ void	heredoc_output(t_words *words, t_test *lst, t_fd *fd, char *delimiter)
 	}
 }
 
-int		route_valid(t_test *lst, int i)
+/*	Checks if parameters given by the user are correct
+*	if not:	sets error to the appropriate ERROR number
+*/
+
+int		route_valid(t_list *lst, int i)
 {
-	if (lst->suffix < 6 || lst->suffix > 9)
+	if ((lst->suffix < 6 || lst->suffix > 9) && lst->suffix != -1)
 		*(lst->err) = PARSE_ERROR;
-	else if (lst->prefix < 1 || lst->prefix > 4)
+	else if ((lst->prefix < 1 || lst->prefix > 4) && lst->prefix != -1)
 		*(lst->err) = PARSE_ERROR;
 	else if ((i == 0 && lst->prefix == 3) || (lst->next == NULL && lst->suffix == 8))
 		*(lst->err) = PARSE_ERROR;
 	else if ((lst->prefix == HEREDOC && lst->hd_delimiter == NULL))
 		*(lst->err) = PARSE_ERROR;
-	else if ((lst->prefix == FILE_IN && lst->filein_path == NULL))
+	else if ((lst->prefix == FILE_IN && access(lst->filein_path, F_OK) == -1))
 		*(lst->err) = FILE_MISSING;
 	else if ((lst->prefix == FILE_IN && lst->filein_path != NULL &&
-		lst->filein_access == FALSE))
+		access(lst->filein_path, R_OK) == -1))
 		*(lst->err) = FILE_ACCESS;
 	else if ((lst->suffix == FILE_OUT || lst->suffix == FILE_APPEND) &&
-		lst->fileout_access == FALSE)
+		lst->fileout_path != NULL && access(lst->fileout_path, W_OK) == -1)
 		*(lst->err) = FILE_ACCESS;
-	return (PARSE_ERROR);
+	return (0);
 }
 
-void	handle_error(t_test *lst)
+/*	prints error message based on number
+*	set in error and terminates process
+*/
+
+void	handle_error(t_list *lst)
 {
 	if (*(lst->err) == 100)
 	{

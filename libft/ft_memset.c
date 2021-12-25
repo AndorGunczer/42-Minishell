@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/15 18:34:13 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/06/22 14:04:37 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+void	*ft_memset(void *s, int c, size_t n)
 {
-	t_env	*tmp;
+	size_t	i;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
+	i = 0;
+	while (i < n)
 	{
-		tmp = tmp->next;
+		((unsigned char *)s)[i] = c;
+		i++;
 	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	return (s);
 }

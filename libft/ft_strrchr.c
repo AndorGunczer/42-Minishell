@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/17 15:51:47 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/10/13 15:27:57 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+char	*ft_strrchr(const char *s, int c)
 {
-	t_env	*tmp;
+	size_t	i;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
-	{
-		tmp = tmp->next;
-	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	while (s[i] != c && i > 0)
+		i--;
+	if (s[i] == c)
+		return (((char *)s) + i);
+	return (NULL);
 }

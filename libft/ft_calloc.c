@@ -1,26 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/17 15:13:53 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/10/13 14:59:38 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	t_env	*tmp;
+	void	*arr;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
-	{
-		tmp = tmp->next;
-	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	arr = malloc(size * nmemb);
+	if (arr == NULL)
+		return (NULL);
+	ft_bzero(arr, size * nmemb);
+	return (arr);
 }

@@ -1,0 +1,37 @@
+Yavuz 24/12 afternoon:
+- I fixed env (char **argv in the main function is mandatory)
+- I added function which free the data list, and function which free env (free.c)
+- Now object creation is not displayed anymore by makefile
+- I removed libft as a git_module and add fixed libt, add 42 headers, shortened folders name
+- In the makefile pls add your own config for your own laptop/readline where the is the if/else statement
+- When we uncomment "-g -fsanitize=address" in CFLAGS in makefile we have heap overflow / infinite loop / strange behavior
+- When you are done readine copy pase this above this log above the log from you i've put below, szia magyar
+______________________________________________________________________________
+
+Yavuz:
+simple and double quotes
+signal handline
+exit builtin
+flags and params of commands
+fix cd / unset
+check permissions of directory for file_in access and file_out access
+
+Andor:
+command shouldnt be able to start with | (behaves correctly with | at end)
+
+______________________________________________________________________________
+
+
+Andor 24/12 morning:
+    -Non-existent filein and inaccessible filein/out didn't seem to be recognized
+        so I decided to check for it again in check_valid(), It works now.
+        BUT, Looked at (void	is_file_accessible(t_list *node)), there are some mishaps
+        - F_OK check if file exists
+        - R_OK check if file has read permissions
+        - W_OK check if file has write permissions
+        (example you check if F_OK and if == -1 you set filein_access to false, but since you couldnt
+            even access it it doesn't exist)
+    -History works now.
+    -main.c 199-203 Took the putendl() out of the statement into the function block,
+    because I couldn't compile it (I guess couz I had to reimport libft and it's a void there)
+    you can delete this after read.

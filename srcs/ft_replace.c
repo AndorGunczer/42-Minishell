@@ -1,4 +1,16 @@
-# include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_replace.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/24 16:45:22 by home              #+#    #+#             */
+/*   Updated: 2021/12/24 16:45:24 by home             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/minishell.h"
 
 typedef struct s_replace {
 	int		i;
@@ -8,6 +20,10 @@ typedef struct s_replace {
 	int		len_new;
 	int		len_src;
 }	t_replace;
+
+/*	Copies character of dst at the given index to
+*	character of str at the given index
+*/
 
 static void	copy(char *str, char *dst)
 {
@@ -23,23 +39,9 @@ static void	copy(char *str, char *dst)
 	}
 }
 
-static int	is_same(char *str, char *src)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (str[i] == src[j] && str[i] != '\0')
-	{
-		j++;
-		i++;
-	}
-	if (src[j] == '\0')
-		return (TRUE);
-	else
-		return (FALSE);
-}
+/*	Recreates the *str by replacing every instance of
+*	*dst by *src
+*/
 
 static void	create_str(char *str, t_replace *re, char *src, char *dst)
 {
@@ -55,6 +57,10 @@ static void	create_str(char *str, t_replace *re, char *src, char *dst)
 			re->ret[re->j++] = str[re->i++];
 	}
 }
+
+/*	Function that replaces every instance of *dst
+*	to *src in the given *str
+*/
 
 char	*replace(char *str, char *src, char *dst)
 {
@@ -79,50 +85,10 @@ char	*replace(char *str, char *src, char *dst)
 		}
 	}
 	re.ret = ft_calloc(re.len_new + 1, sizeof(char));
+	re.ret[re.len_new] = '\0';
 	re.i = 0;
 	create_str(str, &re, src, dst);
+	if (str)
+		free(str);
 	return (re.ret);
 }
-
-/*	// char	*replace(char *str, char *src, char *dst)
-// {
-// 	int		len_new;
-// 	int		len_src;
-// 	int		i;
-// 	int		j;
-// 	int		len_dst;
-// 	char	*ret;
-
-// 	len_new = 0;
-// 	len_src = ft_strlen(src);
-// 	len_dst = ft_strlen(dst);
-// 	i = 0;
-// 	j = 0;
-// 	while (str[i] != '\0')
-// 	{
-// 		if (is_same((str + i), dst))
-// 		{
-// 			len_new += len_src;
-// 			i += len_dst;
-// 		}
-// 		else
-// 		{
-// 			len_new++;
-// 			i++;
-// 		}
-// 	}
-// 	ret = ft_calloc(len_new + 1, sizeof(char));
-// 	i = 0;
-// 	while (str[i] != '\0')
-// 	{
-// 		if (is_same((str + i), dst))
-// 		{
-// 			copy((ret + j), src);
-// 			i += len_dst;
-// 			j += len_src;
-// 		}
-// 		else
-// 			ret[j++] = str[i++];
-// 	}
-// 	return (ret);
-// }*/

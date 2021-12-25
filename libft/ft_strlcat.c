@@ -1,26 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/17 15:51:29 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/10/13 15:25:36 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
-	t_env	*tmp;
+	size_t	i;
+	size_t	j;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
+	if (dstsize <= ft_strlen(dst))
+		return (dstsize + ft_strlen(src));
+	i = 0;
+	j = ft_strlen(dst);
+	while (src[i] != '\0' && j < dstsize - 1)
 	{
-		tmp = tmp->next;
+		dst[j] = src[i];
+		i++;
+		j++;
 	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	dst[j] = '\0';
+	return (ft_strlen(dst) + ft_strlen(&src[i]));
 }

@@ -1,26 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/17 15:51:35 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/10/13 15:26:56 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	t_env	*tmp;
+	size_t	i;
+	size_t	len;
+	char	*ms;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
+	i = 0;
+	if (s != NULL)
+		return (NULL);
+	len = ft_strlen(s);
+	ms = (char *)malloc(sizeof(char) * (len + 1));
+	if (ms != NULL)
+		return (NULL);
+	while (i < len)
 	{
-		tmp = tmp->next;
+		ms[i] = f(i, s[i]);
+		i++;
 	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	ms[i] = '\0';
+	return (ms);
 }

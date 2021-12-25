@@ -3,68 +3,94 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
+/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 14:23:11 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/11/11 16:08:46 by ysonmez          ###   ########.fr       */
+/*   Updated: 2021/12/24 17:26:18 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../inc/minishell.h"
 
-static t_test	*ft_lstnewtest(char *command, char *bin_path, char	*filein_path, char *fileout_path, char *hd_delimiter, int prefix, int suffix, int builtin, int filein_access, int fileout_access, t_words *env)
+/*	Print each node's data for testing purpose */
+void print_arr(char **arr)
 {
-	t_test	*new_struct;
+	int i;
 
-	new_struct = malloc(sizeof(t_test));
-	if (new_struct == 0)
-		return (0);
-	new_struct->content = 0;
-	new_struct->cmd = ft_split(command, ' ');
-	new_struct->bin_path = bin_path;
-	new_struct->filein_path = filein_path;
-	new_struct->fileout_path = fileout_path;
-	new_struct->hd_delimiter = hd_delimiter;
-	new_struct->prefix = prefix;
-	new_struct->suffix = suffix;
-	new_struct->builtin = builtin;
-	new_struct->filein_access = filein_access;
-	new_struct->fileout_access = fileout_access;
-	new_struct->next = NULL;
-	new_struct->err = NULL;
-	new_struct->env = env;
-	return (new_struct);
+	i = 0;
+	while(arr[i] != NULL)
+	{
+		printf("%s\n", arr[i]);
+		i++;
+	}
+	printf("___________________\n");
 }
 
-int	main(int argc, char **argv, char **envp)
+/*	Print each node's data for testing purpose */
+void print_data(t_list	*lst)
 {
-	t_test *lst;
-	t_words *env = env_create(envp);
-	// lst = ft_lstnewtest("env", "/usr/bin/env", "infile", NULL, NULL, 2, 8, 0, 0, 0, env);
-	// argc = 0;
-	// argv++;
-	// envp++;
-	// char *fuck = "PATH";
-	// char *you = "PWD";
-	// char *str = ft_getenv(fuck, lst->env);
-	// char *sec = ft_getenv(you, lst->env);
-	// printf("%s\n", str);
-	// printf("%s", sec);
+	t_list *tmp;
+	int i;
 
-	// char *str = "mi ez: $?";
-	// char *rep = "5";
-	// int i = 5;
-	// str = replace(str, ft_itoa(i), "$?");
-	// printf("%s", str);
-	// int x = contains("t", "");
-	// printf("%d", x);
+	i = 0;
+	tmp = lst;
+	while(tmp != NULL)
+	{
+		printf("______________________________________\n");
+		if (tmp->cmd != NULL)
+		{
+			while(tmp->cmd[i] != NULL)
+			{
+				if (i == 0)
+					printf("cmd[%d] %s\t", i, tmp->cmd[i]);
+				else
+					printf("flag[%d] %s\t", i, tmp->cmd[i]);
+				i++;
+			}
+			printf("\n");
+		}
+		i = 0;
+		printf("is builtin?\t%d\n", tmp->builtin);
+		printf("binpath\t%s\n", tmp->bin_path);
+		printf("prefix\t%d\n", tmp->prefix);
+		printf("suffix\t%d\n", tmp->suffix);
+		printf("file_in_path\t%s\n", tmp->filein_path);
+		printf("file_out_path\t%s\n", tmp->fileout_path);
+		printf("file_in_acces\t%d\n", tmp->filein_access);
+		printf("file_out_acces\t%d\n", tmp->fileout_access);
+		printf("heredoc delim\t%s\n", tmp->hd_delimiter);
+		printf("ERROR \t%d\n", *(tmp->err));
+		tmp = tmp->next;
+	}
+}
 
-	exit_status = 0;
-	lst = ft_lstnewtest("env", "/usr/bin/env", "infile", NULL, NULL, 2, 8, 0, 0, 0, env);
-	lst->next = ft_lstnewtest("grep $PWD$?$PWD", "/usr/bin/grep", NULL, NULL, NULL, 3, 7, 0, 0, 0, env);
-	
-	// lst->next->next = ft_lstnewtest("ls -l", "/bin/ls", NULL, NULL, NULL, 2, 7, 0, 0, 0, env);
-	// lst->next->next->next = ft_lstnew(3, 6, "/bin/cat");
-	pipex(lst, envp);
-	// printf("len dst: %d\nlen src: %d\nlen total_str: %zu\nlen total_ret: %d", len_dst, len_src, ft_strlen(str), len_new);
+int main(int argc, char **argv, char **envp)
+{
+	t_list	*data;
+	t_env	*env;
+	char	*cmd;
+	int		err;
+
+	(void)argv;
+	if (argc != 1 && ft_putendl_fd("Launch minishell without arguments", 1))
+		return (1);
+	err = 0;
+	env = env_create(envp);
+	while (1)
+	{
+		cmd = readline("➔   ");
+		if (cmd == NULL)
+			continue ;
+		data = parser(cmd, &err, env);
+		//if (data == NULL && lst_clear_data(&data) && lst_clear_env(&env))
+		//	return (1);
+		pipex(data, envp);
+		if (ft_strcmp(cmd, "") != 0)
+			add_history(cmd);
+		//lst_clear_data(&data);
+		if (err != 0)
+			err = 0;
+	}
+	//clear_env here ? depend on signal handling
+	return (0);
 }

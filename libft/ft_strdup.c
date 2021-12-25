@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 13:39:49 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:41:56 by home             ###   ########.fr       */
+/*   Created: 2021/06/17 15:51:14 by ysonmez           #+#    #+#             */
+/*   Updated: 2021/10/13 18:58:49 by home             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_list	*lst)
+char	*ft_strdup(const char *s)
 {
-	t_env	*tmp;
+	size_t	i;
+	char	*ss;
+	int		len;
 
-	tmp = lst->env;
-	while (tmp != NULL && ft_strcmp(tmp->var, "PWD"))
+	i = 0;
+	len = ft_strlen(s) + 1;
+	ss = (char *)malloc(sizeof(char) * len);
+	if (ss == NULL)
+		return (NULL);
+	while (s[i] != '\0')
 	{
-		tmp = tmp->next;
+		ss[i] = s[i];
+		i++;
 	}
-	if (tmp != NULL)
-		printf("%s\n", tmp->value);
+	ss[i] = '\0';
+	return (ss);
 }
