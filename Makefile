@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: home <home@student.42.fr>                  +#+  +:+       +#+         #
+#    By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/08 14:20:37 by ysonmez           #+#    #+#              #
-#    Updated: 2021/12/24 17:56:50 by home             ###   ########.fr        #
+#    Updated: 2022/01/04 15:23:55 by ysonmez          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,7 +55,7 @@ else						# School
 	CPPFLAGS="-I/Users/$(USER)/.brew/opt/readline/include"
 endif
 
-CFLAGS			=		-Wall -Werror -Wextra #-g -fsanitize=address
+CFLAGS			=		-Wall -Werror -Wextra -g -fsanitize=address
 
 .c.o			:
 						@gcc $(CFLAGS) -c $< -o $(<:.c=.o)

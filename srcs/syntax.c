@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 17:44:25 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:39:13 by home             ###   ########.fr       */
+/*   Updated: 2022/01/04 16:27:07 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,9 @@ void	get_cmd(t_list *node, char **arr, int i)
 		return ;
 	if (i == 0)
 	{
-		node->cmd = (char **)malloc(sizeof(char *));
+		node->cmd = (char **)malloc(sizeof(char *) * 2);
 		node->cmd[0] = ft_strdup(arr[0]);
+		node->cmd[1] = NULL;
 		return ;
 	}
 	if (arr[i + 1] == NULL)

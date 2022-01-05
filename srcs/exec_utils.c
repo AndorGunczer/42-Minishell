@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 16:45:00 by home              #+#    #+#             */
-/*   Updated: 2021/12/24 16:45:03 by home             ###   ########.fr       */
+/*   Updated: 2022/01/04 15:22:19 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@ void	env_to_value(char **words, t_list *lst)
 
 	i = 0;
 	int j = 0;
-	while (words[i])
+	if (words == NULL)
+		return ;
+	while (words[i] != NULL)
 	{
 		words[i] = replace(words[i], ft_itoa(exit_status) ,"$?");
 		words[i] = path_replace(words[i], lst);

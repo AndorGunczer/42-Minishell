@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 16:12:21 by agunczer          #+#    #+#             */
-/*   Updated: 2021/12/24 16:45:18 by home             ###   ########.fr       */
+/*   Updated: 2022/01/04 14:14:34 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ int	lst_clear_data(t_list **lst)
 	if (*lst == NULL)
 		return (1);
 	to_free = *lst;
+	if (to_free->readline != NULL)
+		free(to_free->readline);
 	while (to_free != NULL)
 	{
 		tmp = to_free->next;
@@ -73,8 +75,6 @@ int	lst_clear_data(t_list **lst)
 			free(to_free->fileout_path);
 		if (to_free->hd_delimiter != NULL)
 			free(to_free->hd_delimiter);
-		if (to_free->readline != NULL)
-			free(to_free->readline);
 		free(to_free);
 		to_free = tmp;
 	}

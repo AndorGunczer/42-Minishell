@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 14:23:11 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 17:26:18 by home             ###   ########.fr       */
+/*   Updated: 2022/01/04 16:28:50 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@ void print_arr(char **arr)
 	int i;
 
 	i = 0;
+	if (arr == NULL)
+		return ;
 	while(arr[i] != NULL)
 	{
-		printf("%s\n", arr[i]);
+		printf("%s\t", arr[i]);
 		i++;
 	}
-	printf("___________________\n");
+	printf("\n");
 }
 
 /*	Print each node's data for testing purpose */
@@ -32,24 +34,12 @@ void print_data(t_list	*lst)
 	t_list *tmp;
 	int i;
 
-	i = 0;
 	tmp = lst;
 	while(tmp != NULL)
 	{
-		printf("______________________________________\n");
-		if (tmp->cmd != NULL)
-		{
-			while(tmp->cmd[i] != NULL)
-			{
-				if (i == 0)
-					printf("cmd[%d] %s\t", i, tmp->cmd[i]);
-				else
-					printf("flag[%d] %s\t", i, tmp->cmd[i]);
-				i++;
-			}
-			printf("\n");
-		}
 		i = 0;
+		printf("______________________________________\n");
+		print_arr(tmp->cmd);
 		printf("is builtin?\t%d\n", tmp->builtin);
 		printf("binpath\t%s\n", tmp->bin_path);
 		printf("prefix\t%d\n", tmp->prefix);
@@ -82,12 +72,13 @@ int main(int argc, char **argv, char **envp)
 		if (cmd == NULL)
 			continue ;
 		data = parser(cmd, &err, env);
-		//if (data == NULL && lst_clear_data(&data) && lst_clear_env(&env))
-		//	return (1);
+		if (data == NULL && lst_clear_data(&data) && lst_clear_env(&env))
+			return (1);
 		pipex(data, envp);
+		//print_data(data);
 		if (ft_strcmp(cmd, "") != 0)
 			add_history(cmd);
-		//lst_clear_data(&data);
+		lst_clear_data(&data);
 		if (err != 0)
 			err = 0;
 	}
