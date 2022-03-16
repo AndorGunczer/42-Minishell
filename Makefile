@@ -6,7 +6,7 @@
 #    By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/08 14:20:37 by ysonmez           #+#    #+#              #
-#    Updated: 2022/01/04 15:23:55 by ysonmez          ###   ########.fr        #
+#    Updated: 2022/02/15 10:09:16 by ysonmez          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,13 +20,25 @@ NAME			=		minishell
 SRCS			=		srcs/main.c \
 						srcs/parser.c \
 						srcs/syntax.c \
+						srcs/cmd.c \
+						srcs/cmd_path.c \
+						srcs/file_hd_spaces.c \
+						srcs/quotes_cmd.c \
+						srcs/quotes_fix.c \
+						srcs/quotes_utils.c \
 						srcs/utils.c \
 						srcs/env_lst.c \
 						srcs/lst_utils.c \
 						srcs/exec_main.c \
+						srcs/exec_main_utils.c \
 						srcs/exec_route.c \
+						srcs/exec_route2.c \
 						srcs/exec_task.c \
 						srcs/exec_utils.c \
+						srcs/exec_lst_utils.c \
+						srcs/exec_command.c \
+						srcs/exec_heredoc.c \
+						srcs/signals.c \
 						srcs/env_get.c \
 						srcs/dollar_sign.c \
 						srcs/ft_replace.c \
@@ -43,19 +55,15 @@ OBJS			=		$(SRCS:.c=.o)
 
 LIB				=		@make -C ./libft
 
-
-ifeq ($(USER), home)		# Yavuz laptop
-	LDFLAGS="-L/usr/local/Cellar/readline/8.1.1/lib"
-	CPPFLAGS="-I/usr/local/Cellar/readline/8.1.1/include"
-#else ifeq ($(USER), ?)		# Andor laptop
-#	LDFLAGS="-L/opt/homebrew/opt/readline/lib"
-#	CPPFLAGS="-I/opt/homebrew/opt/readline/include"
-else						# School
+ifeq ($(USER), home)
+	LDFLAGS="-L/usr/local/opt/readline/lib"
+	CPPFLAGS="-I/usr/local/opt/readline/include"
+else #42
 	LDFLAGS="-L/Users/$(USER)/.brew/opt/readline/lib"
 	CPPFLAGS="-I/Users/$(USER)/.brew/opt/readline/include"
 endif
 
-CFLAGS			=		-Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS			=		-Wall -Werror -Wextra #-g -fsanitize=address
 
 .c.o			:
 						@gcc $(CFLAGS) -c $< -o $(<:.c=.o)

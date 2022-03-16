@@ -6,7 +6,7 @@
 /*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 16:12:21 by agunczer          #+#    #+#             */
-/*   Updated: 2022/01/04 14:14:34 by ysonmez          ###   ########.fr       */
+/*   Updated: 2022/01/25 14:10:33 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,14 @@ int	lst_clear_env(t_env **env)
 
 /*	Free the t_list *lst used for the user input's data of each command */
 
-int	lst_clear_data(t_list **lst)
+int	lst_clear_data(t_list **lst, t_list *tmp, t_list *to_free)
 {
-	t_list	*tmp;
-	t_list	*to_free;
-
 	if (*lst == NULL)
 		return (1);
 	to_free = *lst;
 	if (to_free->readline != NULL)
 		free(to_free->readline);
+	*to_free->read_index = 0;
 	while (to_free != NULL)
 	{
 		tmp = to_free->next;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_lst.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 19:03:53 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 16:44:14 by home             ###   ########.fr       */
+/*   Updated: 2022/02/02 16:46:25 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	get_var_value(char *env, t_env *node)
 		i++;
 	}
 	node->var = (char *)malloc(sizeof(char) * (i + 1));
-	if (node->var == NULL)
+	if (node->var == NULL && exit_positive(2, MALLOC_FAIL))
 		return ;
 	i = 0;
 	while (env[i] != '\0' && env[i] != '=')
@@ -57,12 +57,18 @@ t_env	*env_create(char **envp)
 	i = 0;
 	env = NULL;
 	if (envp == NULL)
-		return (NULL);
+	{
+		env = new_node();
+		if (env == NULL)
+			exit(EXIT_FAILURE);
+		get_var_value("", env);
+		return (env);
+	}
 	while (envp[i] != NULL)
 	{
 		node = new_node();
 		if (node == NULL)
-			return (NULL);
+			exit(EXIT_FAILURE);
 		get_var_value(envp[i], node);
 		addto_lst(&env, node);
 		i++;

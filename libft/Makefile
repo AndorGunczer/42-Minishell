@@ -6,7 +6,7 @@
 #    By: home <home@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/15 12:03:05 by ysonmez           #+#    #+#              #
-#    Updated: 2021/12/24 16:35:06 by home             ###   ########.fr        #
+#    Updated: 2022/01/05 12:11:54 by home             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ SRCS	=		ft_atoi.c \
 				ft_strlcat.c \
 				ft_strlen.c \
 				ft_strmapi.c \
+				ft_strcmp.c \
 				ft_strncmp.c \
 				ft_strnstr.c \
 				ft_strrchr.c \

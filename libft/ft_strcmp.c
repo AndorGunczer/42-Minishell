@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memfreeall.c                                    :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/06 10:56:02 by ysonmez           #+#    #+#             */
-/*   Updated: 2022/01/10 13:54:28 by ysonmez          ###   ########.fr       */
+/*   Created: 2022/01/05 12:11:18 by home              #+#    #+#             */
+/*   Updated: 2022/01/19 17:13:32 by ysonmez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_memfreeall(void **ptr)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	if (ptr == NULL)
-		return (1);
-	while (ptr[i] != NULL)
+	if (s1 == NULL || s2 == NULL)
+		return (-1);
+	while (s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
 	{
-		ft_memfree(ptr[i]);
 		i++;
 	}
-	free(ptr);
-	ptr = NULL;
-	return (1);
+	return ((unsigned char)s1[i] - (unsigned char) s2[i]);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: home <home@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: agunczer <agunczer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 14:29:48 by ysonmez           #+#    #+#             */
-/*   Updated: 2021/12/24 16:55:23 by home             ###   ########.fr       */
+/*   Updated: 2022/02/14 16:20:17 by agunczer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 # include "../libft/libft.h"
 # include <stdio.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <limits.h>
@@ -30,6 +31,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <termios.h>
 
 /*	Prefix and Suffix, from where we read to where we write */
 
@@ -45,7 +47,9 @@ typedef enum e_fix
 	FILE_APPEND	=	9
 }	t_fix;
 
-/*	ERROR MACRO */
+/*	Errors handling, global exit status variable and maccros */
+
+int	g_exit_status;
 
 # define PARSE_ERROR 100
 # define PARSE_ERR_MSG "Parse error\n"
@@ -59,10 +63,15 @@ typedef enum e_fix
 # define FILE_ACCESS 103
 # define FILE_ACCESS_MSG "File cannot be accessed\n"
 
+# define STR_NOT_IN_PWD 104
+# define PWD "String not in pwd\n"
+
+# define MALLOC_FAIL "malloc() failed: insufficient memory!\n"
+
+# define FILE_MISSING_127 105
+
 # define TRUE 1
 # define FALSE 0
-
-int	exit_status;
 
 /*	list to scalably store a series of *strings */
 
@@ -98,98 +107,159 @@ typedef struct s_env
 
 typedef struct s_list
 {
-	t_env		*env;
-	int			*err;
-	char		*readline;
-	char		**cmd;
-	char		*bin_path;
-	char		*filein_path;
-	char		*fileout_path;
-	char		*hd_delimiter;
-	int			suffix;
-	int			prefix;
-	bool		builtin;
-	bool		filein_access;
-	bool		fileout_access;
+	t_env			*env;
+	int				*read_index;
+	char			*readline;
+	char			**cmd;
+	char			*bin_path;
+	char			*filein_path;
+	char			*fileout_path;
+	char			*hd_delimiter;
+	int				suffix;
+	int				prefix;
+	bool			builtin;
+	bool			filein_access;
+	bool			fileout_access;
+	int				quote_cmd;
+	int				quote_in;
+	int				quote_out;
 	struct s_list	*next;
 }	t_list;
 
+/*	Inclusion of dollar_sign.c exclusive structs to comply
+*	norm
+*/
+
+typedef struct s_store_env {
+	char				*string;
+	int					var_len;
+	struct s_store_env	*next;
+}	t_store_env;
+
+typedef struct s_dollar {
+	int			i;
+	int			j;
+	char		*ret;
+	int			len_dst;
+	int			len_new;
+	int			len_src;
+	int			x;
+	t_store_env	*var;
+	t_store_env	*tmp;
+}	t_dollar;
+
+/*	Readline has some pb on macOS, the prototype is not already implemented */
+void			rl_replace_line(const char *text, int clear_undo);
+
+/*	signals.c */
+void			main_sighandler(int signal);
+void			blocking_sighandler(void);
+void			sig_hd(int sig);
 
 /*	parser.c */
-t_list	*parser(char *cmd, int *err, t_env *env);
+void			init_data(t_list *node, char *readline, t_env *env);
+t_list			*parser(char *cmd, t_env *env, int i, t_list *list);
 
 /*	syntax.c */
-void	get_cmd(t_list *node, char **arr, int i);
-void	handle_quotes(t_list *node);
-void	is_builtin(t_list *node);
-void	is_full_path(t_list *node);
-void	get_bin_path(t_list *node, int i);
-void	get_fix(t_list *node, char **arr, int i);
-void	get_file_path(t_list *node, char **arr, int i);
-void	is_file_accessible(t_list *node);
-void	heredoc_delimiter(t_list *node, char **arr);
+void			get_fix(t_list *node, char **arr, int i);
+void			get_file_path(t_list *node, char **arr, int i);
+void			is_file_accessible(t_list *node);
+void			heredoc_delimiter(t_list *node, char **arr);
+
+/*	cmd.c */
+void			get_cmd(t_list *node, char **arr, int i);
+void			is_builtin(t_list *node);
+
+/*	cmd_path.c */
+void			get_path(t_list *node);
+
+/*	file_hd_spaces */
+char			**space_fix(char **arr, int i, int j, int count);
+
+/*	HANDLE QUOTES */
+void			trim_quotes_prefix(t_list *node, unsigned char q, int k);
+void			trim_quotes_suffix(t_list *node, unsigned char q, int k);
+void			trim_quotes_cmd(t_list *node);
+unsigned char	which_quote(char *cmd);
+int				count_quotes(char *cmd, unsigned char q);
+int				on_opt(char a, char b);
+char			*copy_trimmed_str(t_list *node, unsigned char q);
+int				contain_quote(const char *s, int c);
 
 /*	utils.c */
-int	is_opt(char *str);
-int	ft_strcmp(const char *s1, const char *s2);
-char	**space_fix(char **arr);
+int				is_opt(char *str);
+int				ft_strcmp(const char *s1, const char *s2);
 
-
-int		count_str(char **arr);
+int				count_str(char **arr);
 
 /*	env_lst.c */
-void	get_var_value(char *env, t_env *node);
-t_env	*env_create(char **envp);
+void			get_var_value(char *env, t_env *node);
+t_env			*env_create(char **envp);
 
 /*	lst_utils.c */
-t_env	*new_node(void);
-t_list	*ft_lstnew(void);
-void	addto_lst(t_env **lst, t_env *new);
-void	ft_lstadd_back(t_list **lst, t_list *new);
+t_env			*new_node(void);
+t_list			*ft_lstnew(void);
+void			addto_lst(t_env **lst, t_env *new);
+void			ft_lstadd_back(t_list **lst, t_list *new);
 
 /*	Built-in commands */
-void	ft_cd(t_list	*lst);
-void	ft_echo(t_list	*lst);
-void	ft_env(t_list	*lst);
-void	ft_exit(t_list	*lst);
-void	ft_export(t_list	*lst);
-void	ft_pwd(t_list	*lst);
-void	ft_unset(t_list	*lst);
+void			ft_cd(t_list	*lst, int err, char *home, t_env *tmp);
+void			ft_echo(t_list	*lst, int i, int nl);
+void			ft_env(t_list	*lst);
+void			ft_exit(t_list	*lst);
+void			ft_export(t_list *lst, t_env *new, t_env *tmp, t_env *to_free);
+void			ft_pwd(t_list	*lst);
+void			ft_unset(t_list	*lst);
 
 /*	exec_main.c */
-void	pipex(t_list *lst, char **envp);
+void			pipex(t_list *lst);
+
+/*	exec_main_utils.c */
+int				cmd_count(t_list *lst);
+void			ft_wait(int cmd_cnt);
+int				exit_zero(void);
+int				check_fails(t_list *lst);
 
 /*	exec_task.c */
-void	execute_task(t_list *lst, char **envp, t_fd *fd);
+void			execute_task(t_list *lst, t_fd *fd);
 
 /*	exec_route.c */
-void	sourceof_in_out(t_list *lst, t_fd *fd);
+void			sourceof_in_out(t_list *lst, t_fd *fd);
+
+/*	exec_route2.c */
+void			stdin_pipe_out(t_fd *fd);
+void			check_if_pipe(t_list *lst, t_fd *fd);
 
 /*	exec_utils.c */
-void	env_to_value_lst(t_words *words, t_list *lst);
-void	env_to_value(char **words, t_list *lst);
-void	heredoc_output(t_words *words, t_list *lst, t_fd *fd, char *delimiter);
-int		route_valid(t_list *lst, int i);
-void	handle_error(t_list *lst);
+void			copy(char *str, char *dst);
+void			close_pipes(t_fd *fd);
+int				exit_positive(int exit_status, char *exit_text);
+int				cst_free(char *str, t_dollar *lst, int mode);
+int				expansion(t_list *tmp);
 
-/*	env_create.c */
-char	*ft_getenv(char *str, t_env *lst);
-t_env	*env_create(char **envp);
-int		is_same(char *str, char *src);
+/*	exec_lst_utils.c */
+t_words			*ft_wordsnew(void *content);
+int				ft_lstsize(t_env *env);
+
+/*	exec_command.c */
+void			command(t_list *lst, t_fd *fd);
+
+/*	exec_heredoc.c */
+void			heredoc(t_list *lst, t_fd *fd);
+
+/*	env_get.c */
+int				env_to_value_lst(t_words *words, t_list *lst);
+int				env_to_value(char **words, t_list *lst);
+char			*ft_getenv(char *str, t_env *lst);
+int				is_same(char *str, char *src);
 
 /*	dollar_sign.c */
-char	*path_replace(char *str, t_list *env);
-char	*replace(char *str, char *src, char *dst);
+char			*path_replace(char *str, t_list *env);
+char			*replace(char *str, char *src, char *dst);
 
 /*	free.c	*/
-void	lst_clear_words(t_words **lst);
-int		lst_clear_env(t_env **env);
-int		lst_clear_data(t_list **lst);
-
-
-/*	TESTING PURPOSE TO REMOVE */
-void print_data(t_list	*lst);
-void print_arr(char **arr);
-# define PRINT_HERE() (printf("file: %s, line: %d\n", __FILE__, __LINE__));
+void			lst_clear_words(t_words **lst);
+int				lst_clear_env(t_env **env);
+int				lst_clear_data(t_list **lst, t_list *tmp, t_list *to_free);
 
 #endif
