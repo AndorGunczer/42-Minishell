@@ -12,6 +12,8 @@
 
 #include "../inc/minishell.h"
 
+int	g_exit_status;
+
 static void	minishell(char *cmd, int stin, int stout, t_env *env)
 {
 	t_list	*data;

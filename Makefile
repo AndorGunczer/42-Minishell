@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ysonmez <ysonmez@student.42.fr>            +#+  +:+       +#+         #
+#    By: agunczer <agunczer@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/11/08 14:20:37 by ysonmez           #+#    #+#              #
-#    Updated: 2022/02/15 10:09:16 by ysonmez          ###   ########.fr        #
+#    Created: 2021/11/08 14:20:37 by agunczer           #+#    #+#              #
+#    Updated: 2022/02/15 10:09:16 by agunczer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,7 @@ else #42
 	CPPFLAGS="-I/Users/$(USER)/.brew/opt/readline/include"
 endif
 
-CFLAGS			=		-Wall -Werror -Wextra #-g -fsanitize=address
+CFLAGS			=		-Wall #-Werror -Wextra #-g -fsanitize=address
 
 .c.o			:
 						@gcc $(CFLAGS) -c $< -o $(<:.c=.o)
@@ -71,7 +71,7 @@ CFLAGS			=		-Wall -Werror -Wextra #-g -fsanitize=address
 $(NAME)			:		$(OBJS)
 						$(LIB)
 						@echo "$(Green)Libft has been created$(Set_Color)"
-						@gcc -lreadline $(LDFLAGS) $(CPPFLAGS) $(CFLAGS) $(OBJS) libft/libft.a -o $(NAME)
+						@gcc $(LDFLAGS) $(CPPFLAGS) $(CFLAGS) $(OBJS) libft/libft.a -o $(NAME) -lreadline -lncurses
 						@echo "$(Green)Minishell has been created$(Set_Color)"
 
 lib				:

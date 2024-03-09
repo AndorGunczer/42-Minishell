@@ -33,6 +33,9 @@
 # include <sys/wait.h>
 # include <termios.h>
 
+# include <curses.h>
+# include <term.h>
+
 /*	Prefix and Suffix, from where we read to where we write */
 
 typedef enum e_fix
@@ -49,7 +52,7 @@ typedef enum e_fix
 
 /*	Errors handling, global exit status variable and maccros */
 
-int	g_exit_status;
+extern int	g_exit_status;
 
 # define PARSE_ERROR 100
 # define PARSE_ERR_MSG "Parse error\n"
